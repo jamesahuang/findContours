@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canvas Drawing</title>
+  <style>
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+        canvas {
+            border: 1px solid black;
+        }
+        #myInput {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+      <canvas id="myCanvas" width="800" height="800"></canvas>
+        <div id="myInput">
+           <textarea id="pointInput" rows="20" cols="26" placeholder="Enter points as [[x,y],...]"></textarea>
+            <p id="pointCount">Point count: 0</p>
+        </div>
+    </div>
+  <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        const pointInput = document.getElementById('pointInput');
+        const pointCount = document.getElementById('pointCount');
+
+        function drawPoints(points) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.moveTo(points[0][0], points[0][1]);
+
+            for (let i = 1; i< points.length; i++) {
+                ctx.lineTo(points[i][0], points[i][1]);
+            }
+            ctx.lineTo(points[0][0], points[0][1]);
+
+            ctx.stroke();
+        }
+
+        function parsePoints(input) {
+            try {
+                const points = JSON.parse(input);
+
+                if (!Array.isArray(points)) {
+                    throw new Error('Input is not an array');
+                }
+
+                for (const point of points) {
+                    if (!Array.isArray(point) || point.length !== 2 || typeof point[0] !== 'number' || typeof point[1] !== 'number') {
+                        throw new Error('Invalid point format');
+                    }
+                }
+
+                return points;
+            } catch (error) {
+                console.error('Failed to parse points:', error);
+                return [];
+            }
+        }
+
+        pointInput.addEventListener('input', (event) => {
+            const points = parsePoints(event.target.value);
+            drawPoints(points);
+            pointCount.textContent = `Point count: ${points.length}`;
+        });
+    </script>
+</body>
+</html>
