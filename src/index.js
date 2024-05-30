@@ -23,8 +23,8 @@ export async function computeConvexHullFromImage(imagePath) {
     }
     const concavePoints = findPerpendicularsPointsInCircle(pointA, pointB, aroundCenter);
     if (concavePoints.length > 0) {
-      const concave = concavePoints.find(([x, y]) => pixelValues[(y * width + x)] === 1);
-      concavePendingPoints.push(concave ? concave : concavePoints[0]);
+      const concave = concavePoints.find(([x, y]) => pixelValues[(y * width + x)] > 0);
+      concavePendingPoints.push(concave ? concave : null);
     } else {
       concavePendingPoints.push(null);
     }
